@@ -1,0 +1,5 @@
+- name: 'enable stunnel4'
+  replace: dest=/etc/default/stunnel4 regexp='^ENABLED=0$' replace='ENABLED=1'
+
+- name: 'load handlers for OS specific'
+  include: "{{ ansible_os_family }}.yml"

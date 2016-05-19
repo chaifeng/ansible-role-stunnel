@@ -1,0 +1,3 @@
+- name: 'Ensure stunnel'
+  homebrew: name=stunnel
+  notify: 'ensure stunnel chroot dir'

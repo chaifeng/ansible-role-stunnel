@@ -1,0 +1,5 @@
+- name: 'reload stunnel'
+  shell: kill -HUP "$(<{{ stunnel.chroot }}/{{ stunnel.name }}.pid)"
+
+- name: 'restart stunnel'
+  shell: kill "$(<{{ stunnel.chroot }}/{{ stunnel.name }}.pid)"

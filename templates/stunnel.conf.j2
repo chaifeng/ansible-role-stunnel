@@ -1,0 +1,40 @@
+pid = {{ stunnel.chroot }}/{{ stunnel.name }}.pid
+output = {{ stunnel.chroot }}/{{ stunnel.name }}.log
+debug = {{ stunnel.debug }}
+{% if stunnel.foreground is defined %}
+foreground = {{ stunnel.foreground }}
+{% endif %}
+
+socket = l:TCP_NODELAY=1
+socket = r:TCP_NODELAY=1
+socket = l:SO_KEEPALIVE=1
+socket = r:SO_KEEPALIVE=1
+options = NO_SSLv2
+
+[{{ stunnel.name }}]
+client = {{ stunnel.client }}
+accept = {{ stunnel.accept }}
+{% if stunnel.connect is defined %}
+connect = {{ stunnel.connect }}
+{% endif %}
+{% if stunnel.connects is defined %}{% for connect in stunnel.connects %}
+connect = {{ connect }}
+{% endfor %}{% endif %}
+{% if stunnel.cert_file is defined %}
+cert = {{ stunnel.cert_file }}
+{% else %}
+cert = {{ stunnel.confdir }}/{{ stunnel.cert }}.pem
+{% endif %}
+{% if stunnel.key_file is defined %}
+key = {{ stunnel.key_file }}
+{% endif %}
+{% if stunnel.psk is defined %}
+ciphers = PSK
+PSKsecrets = {{stunnel.confdir }}/{{ stunnel.name }}.secrets
+{% endif %}
+{% if stunnel.extra is defined %}
+;; extra
+{{ stunnel.extra }}
+{% endif %}
+
+; vim:ft=dosini

@@ -1,0 +1,12 @@
+allow_duplicates: True
+
+dependencies:
+  - role: homebrew
+  - role: supervisor
+    supervisor:
+      name: "stunnel-{{ stunnel.accept }}"
+      command: "/usr/local/bin/stunnel /usr/local/etc/stunnel/{{ stunnel.name }}.conf"
+      directory: /tmp
+      process_name: "{{ stunnel.name }}.conf"
+      startretries: 65535
+      startsecs: 5

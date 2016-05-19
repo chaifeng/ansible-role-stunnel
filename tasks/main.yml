@@ -1,0 +1,43 @@
+---
+- name: 'load OS specific tasks'
+  include: "{{ ansible_os_family }}.yml"
+
+- name: 'Ensure PSKsecrets'
+  copy:
+    content: "{{ stunnel.psk }}"
+    dest: "{{stunnel.confdir }}/{{ stunnel.name }}.secrets"
+    mode: go-rwx
+  when: stunnel.psk is defined
+  tags:
+    - stunnel
+    - stunnel_psk
+
+- name: ensure stunnel chroot dir
+  file: path="{{ stunnel.chroot }}" state=directory
+
+- name: "ensure {{ stunnel.name }}.conf"
+  template: src=stunnel.conf.j2 dest="{{ stunnel.confdir }}/{{ stunnel.name }}.conf"
+  notify:
+    - 'restart stunnel'
+  tags:
+    - stunnel
+    - stunnel_conf
+
+- name: 'certificate for stunnel: {{ stunnel.cert }}.pem'
+  copy: src={{ stunnel.cert }}.pem dest="{{ stunnel.confdir }}/" mode=0600
+  when: stunnel.cert is defined
+  notify:
+    - 'restart stunnel'
+  tags:
+    - stunnel
+    - stunnel_cert
+
+- name: 'Ensure {{ stunnel.name }} is running'
+  service: name=stunnel4 state=running args="{{ stunnel.name }}" pattern="/etc/stunnel/{{ stunnel.name }}.conf"
+  when: ansible_os_family == "Debian"
+  tags:
+    - checking
+
+- name: 'Allow listening port'
+  ufw: rule=allow port="{{ stunnel.accept }}" proto=tcp
+  when: ansible_os_family == "Debian"
