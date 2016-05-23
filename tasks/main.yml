@@ -1,6 +1,38 @@
 ---
-- name: 'load OS specific tasks'
-  include: "{{ ansible_os_family }}.yml"
+- name: 'Ensure stunnel'
+  homebrew: name=stunnel
+  when: ansible_os_family == "Darwin"
+
+- block:
+    - name: 'Ensure libssl-dev'
+      apt: name=libssl-dev
+    
+    - name: 'Download stunnel {{ stunnel.version }}'
+      get_url: >
+        url="https://www.stunnel.org/downloads/stunnel-{{ stunnel.version }}.tar.gz"
+        dest="/usr/src/stunnel-{{ stunnel.version }}.tar.gz"
+    
+    - name: 'Compile stunnel'
+      shell: |
+        set -e
+        cd /usr/src
+        test -d "stunnel-{{ stunnel.version }}" && rm -r "stunnel-{{ stunnel.version }}"
+        tar zxf "stunnel-{{ stunnel.version }}.tar.gz"
+        cd "stunnel-{{ stunnel.version }}"
+        ./configure && make
+        cp src/stunnel "/usr/bin/stunnel5-{{ stunnel.version }}.bin"
+    
+        test -L "/usr/bin/stunnel4" || mv "/usr/bin/stunnel4" "/usr/bin/stunnel4-4.53"
+        test -L "/usr/bin/stunnel4" && rm "/usr/bin/stunnel4"
+    
+        ln -s "/usr/bin/stunnel5-{{ stunnel.version }}.bin" /usr/bin/stunnel4
+        ln -s "/usr/bin/stunnel5-{{ stunnel.version }}.bin" "/usr/bin/stunnel5-{{ stunnel.version }}"
+      args:
+        creates: "/usr/bin/stunnel5-{{ stunnel.version }}"
+    
+    - name: 'Enable stunnel4 service'
+      replace: dest=/etc/default/stunnel4 regexp='^ENABLED=0$' replace='ENABLED=1'
+  when: ansible_os_family == "Debian"  
 
 - name: 'Ensure PSKsecrets'
   copy:
@@ -18,7 +50,7 @@
 - name: "ensure {{ stunnel.name }}.conf"
   template: src=stunnel.conf.j2 dest="{{ stunnel.confdir }}/{{ stunnel.name }}.conf"
   notify:
-    - 'restart stunnel'
+    - 'reload stunnel configurations'
   tags:
     - stunnel
     - stunnel_conf
@@ -27,17 +59,17 @@
   copy: src={{ stunnel.cert }}.pem dest="{{ stunnel.confdir }}/" mode=0600
   when: stunnel.cert is defined
   notify:
-    - 'restart stunnel'
+    - 'reload stunnel configurations'
   tags:
     - stunnel
     - stunnel_cert
 
-- name: 'Ensure {{ stunnel.name }} is running'
-  service: name=stunnel4 state=running args="{{ stunnel.name }}" pattern="/etc/stunnel/{{ stunnel.name }}.conf"
-  when: ansible_os_family == "Debian"
-  tags:
-    - checking
+- block:
+    - name: 'Ensure {{ stunnel.name }} is running'
+      service: name=stunnel4 state=running args="{{ stunnel.name }}" pattern="/etc/stunnel/{{ stunnel.name }}.conf"
+      tags:
+        - checking
 
-- name: 'Allow listening port'
-  ufw: rule=allow port="{{ stunnel.accept }}" proto=tcp
+    - name: 'Allow listening port'
+      ufw: rule=allow port="{{ stunnel.accept }}" proto=tcp
   when: ansible_os_family == "Debian"
