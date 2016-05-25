@@ -39,7 +39,7 @@
     content: "{{ stunnel.psk }}"
     dest: "{{stunnel.confdir }}/{{ stunnel.name }}.secrets"
     mode: go-rwx
-  when: stunnel.psk is defined
+  when: stunnel.psk is defined and stunnel.psk
   tags:
     - stunnel
     - stunnel_psk

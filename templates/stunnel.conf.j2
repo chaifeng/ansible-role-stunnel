@@ -28,7 +28,7 @@ cert = {{ stunnel.confdir }}/{{ stunnel.cert }}.pem
 {% if stunnel.key_file is defined %}
 key = {{ stunnel.key_file }}
 {% endif %}
-{% if stunnel.psk is defined %}
+{% if stunnel.psk is defined and stunnel.psk %}
 ciphers = PSK
 PSKsecrets = {{stunnel.confdir }}/{{ stunnel.name }}.secrets
 {% endif %}
