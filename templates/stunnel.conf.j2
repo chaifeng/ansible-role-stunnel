@@ -14,10 +14,9 @@ options = NO_SSLv2
 [{{ stunnel.name }}]
 client = {{ stunnel.client }}
 accept = {{ stunnel.accept }}
-{% if stunnel.connect is defined %}
+{% if stunnel.connect is string %}
 connect = {{ stunnel.connect }}
-{% endif %}
-{% if stunnel.connects is defined %}{% for connect in stunnel.connects %}
+{% else %}{% for connect in stunnel.connect %}
 connect = {{ connect }}
 {% endfor %}{% endif %}
 {% if stunnel.cert_file is defined %}
