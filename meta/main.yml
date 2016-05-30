@@ -1,12 +1,13 @@
 allow_duplicates: True
 
 dependencies:
-  - role: homebrew
+  - homebrew
   - role: supervisor
     supervisor:
-      name: "stunnel-{{ stunnel.accept }}"
-      command: "/usr/local/bin/stunnel /usr/local/etc/stunnel/{{ stunnel.name }}.conf"
+      name: "stunnel-{{ stunnel.name }}"
+      command: "{{ stunnel.exec }} {{ stunnel.confdir }}/{{ stunnel.name }}.conf"
       directory: /tmp
       process_name: "{{ stunnel.name }}.conf"
       startretries: 65535
       startsecs: 5
+      disable: "{{ stunnel.disable }}"

@@ -1,2 +1,2 @@
-- name: 'reload stunnel configurations'
-  shell: pkill -HUP '^stunnel'
+- name: 'Reload stunnel configurations'
+  shell: pkill -HUP "^$(basename '{{ stunnel.exec }}')"
