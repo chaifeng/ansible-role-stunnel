@@ -2,7 +2,7 @@ pid = {{ stunnel.chroot }}/{{ stunnel.name }}.pid
 output = {{ stunnel.chroot }}/{{ stunnel.name }}.log
 debug = {{ stunnel.debug }}
 {% if stunnel.foreground is defined %}
-foreground = {{ stunnel.foreground }}
+foreground = {{ stunnel.foreground | ternary('yes', 'no') }}
 {% endif %}
 
 socket = l:TCP_NODELAY=1

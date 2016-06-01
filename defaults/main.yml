@@ -3,7 +3,7 @@ stunnel:
   exec: /usr/bin/stunnel5
   chroot: /var/lib/stunnel5
   confdir: /etc/stunnel5
-  foreground: 'yes'
+  foreground: yes
   debug: 0
   cert: 'stunnel'
   client: 'no'
