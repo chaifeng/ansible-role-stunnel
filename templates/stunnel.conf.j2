@@ -12,7 +12,7 @@ socket = r:SO_KEEPALIVE=1
 options = NO_SSLv2
 
 [{{ stunnel.name }}]
-client = {{ stunnel.client }}
+client = {{ stunnel.client | ternary('yes', 'no') }}
 accept = {{ stunnel.accept }}
 {% if stunnel.connect is string %}
 connect = {{ stunnel.connect }}

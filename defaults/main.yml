@@ -6,7 +6,7 @@ stunnel:
   foreground: yes
   debug: 0
   cert: 'stunnel'
-  client: 'no'
+  client: no
   name: https
   accept: 443
   # connect: 80
