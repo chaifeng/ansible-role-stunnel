@@ -38,10 +38,7 @@
 
 - block:
     - name: 'Ensure PSKsecrets'
-      copy:
-        content: "{{ stunnel.psk }}"
-        dest: "{{stunnel.confdir }}/{{ stunnel.name }}.secrets"
-        mode: go-rwx
+      template: src=stunnel.secret.j2 dest="{{stunnel.confdir }}/{{ stunnel.name }}.secrets" mode="go-rwx"
       when: stunnel.psk is defined and stunnel.psk
       tags:
         - stunnel
