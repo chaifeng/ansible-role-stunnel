@@ -65,5 +65,6 @@
       ufw: rule=allow port="{{ stunnel.accept }}" proto=tcp
       when: (ansible_os_family == "Debian") and (stunnel.accept | isnan)
       tags:
+        - stunnel
         - firewall
   when: stunnel.disable == false
