@@ -1,5 +1,5 @@
 stunnel:
-  version: 5.35
+  version: 5.36
   exec: /usr/bin/stunnel5
   chroot: /var/lib/stunnel5
   confdir: /etc/stunnel5

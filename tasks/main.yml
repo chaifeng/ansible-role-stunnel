@@ -5,7 +5,7 @@
 
 - block:
     - name: 'Ensure libssl-dev'
-      apt: name=libssl-dev
+      apt: name=libssl-dev,build-essential
     
     - name: 'Download stunnel {{ stunnel.version }}'
       get_url: >
