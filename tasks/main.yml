@@ -1,18 +1,18 @@
 ---
-- name: 'Ensure stunnel'
+- name: 'Mac | Ensure stunnel'
   homebrew: name=stunnel
   when: ansible_os_family == "Darwin"
 
 - block:
-    - name: 'Ensure libssl-dev'
+    - name: 'Debian | Ensure libssl-dev'
       apt: name=libssl-dev,build-essential
     
-    - name: 'Download stunnel {{ stunnel.version }}'
+    - name: 'Debian | Download stunnel {{ stunnel.version }}'
       get_url: >
         url="https://www.stunnel.org/downloads/stunnel-{{ stunnel.version }}.tar.gz"
         dest="/usr/src/stunnel-{{ stunnel.version }}.tar.gz"
     
-    - name: 'Compile stunnel'
+    - name: 'Debian | Compile stunnel'
       shell: |
         set -e
         cd /usr/src
