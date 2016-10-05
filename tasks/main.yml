@@ -62,8 +62,8 @@
         - stunnel_cert
 
     - name: 'Allow listening port {{ stunnel.accept }}'
-      ufw: rule=allow port="{{ stunnel.accept }}" proto=tcp
-      when: (ansible_os_family == "Debian") and (stunnel.accept | isnan)
+      ufw: rule=allow port="{{ stunnel.accept }}" proto=any
+      when: (ansible_os_family == "Debian") and (stunnel.accept|int > 0)
       tags:
         - stunnel
         - firewall
