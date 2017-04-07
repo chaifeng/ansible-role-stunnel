@@ -41,14 +41,17 @@
       template: src=stunnel.secret.j2 dest="{{stunnel.confdir }}/{{ stunnel.name }}.secrets" mode="go-rwx"
       when: stunnel.psk is defined and stunnel.psk
       tags:
+        - config
         - stunnel
         - stunnel_psk
+        - stunnel_conf
     
     - name: "ensure {{ stunnel.name }}.conf"
-      template: src=stunnel.conf.j2 dest="{{ stunnel.confdir }}/{{ stunnel.name }}.conf"
+      template: src="{{ stunnel.template | default('stunnel') }}.conf.j2" dest="{{ stunnel.confdir }}/{{ stunnel.name }}.conf"
       notify:
         - 'Reload stunnel configurations'
       tags:
+        - config
         - stunnel
         - stunnel_conf
     
@@ -58,6 +61,7 @@
       notify:
         - 'Reload stunnel configurations'
       tags:
+        - config
         - stunnel
         - stunnel_cert
 
@@ -65,6 +69,7 @@
       ufw: rule=allow port="{{ stunnel.accept }}" proto=any
       when: (ansible_os_family == "Debian") and (stunnel.accept|int > 0)
       tags:
+        - config
         - stunnel
         - firewall
   when: stunnel.disable == false
