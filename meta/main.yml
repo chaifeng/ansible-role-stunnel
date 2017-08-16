@@ -1,7 +1,8 @@
 allow_duplicates: True
 
 dependencies:
-  - homebrew
+  - role: homebrew
+    when: ansible_os_family == "Darwin"
   - role: supervisor
     supervisor:
       name: "stunnel-{{ stunnel.name }}"

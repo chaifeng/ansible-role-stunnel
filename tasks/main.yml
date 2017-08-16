@@ -57,7 +57,7 @@
     
     - name: 'certificate for stunnel: {{ stunnel.cert }}.pem'
       copy: src={{ stunnel.cert }}.pem dest="{{ stunnel.confdir }}/" mode=0600
-      when: stunnel.cert is defined
+      when: stunnel.cert is defined and stunnel.cert
       notify:
         - 'Reload stunnel configurations'
       tags:
