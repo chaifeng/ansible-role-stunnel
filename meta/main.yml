@@ -8,7 +8,6 @@ dependencies:
       name: "stunnel-{{ stunnel.name }}"
       command: "{{ stunnel.exec }} {{ stunnel.confdir }}/{{ stunnel.name }}.conf"
       directory: /tmp
-      process_name: "{{ stunnel.name }}.conf"
       startretries: 65535
       startsecs: 5
       disable: "{{ stunnel.disable }}"
